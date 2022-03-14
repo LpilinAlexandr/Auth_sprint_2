@@ -1,0 +1,61 @@
+version: '3.9'
+
+services:
+  web:
+    build: .
+    image: auth_service
+    container_name: auth_api
+    env_file:
+      - .env
+    command:
+      - /bin/bash
+      - -c
+      - |
+        python3 utils/wait_for_redis.py
+        python3 utils/wait_for_postgres.py
+        gunicorn wsgi_app:app --bind 0.0.0.0:5000
+    expose:
+      - '5000'
+    networks:
+      auth_network:
+
+
+  nginx:
+    build: ./nginx
+    container_name: auth_nginx
+    networks:
+      auth_network:
+    ports:
+      - "80:80"
+
+  db:
+    image: postgres:13.3
+    container_name: auth_postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    networks:
+      auth_network:
+
+  redis:
+    image: redis:6-alpine
+    container_name: auth_redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      auth_network:
+    ports:
+      - '6379:6379'
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "6831:6831/udp"
+      - "16686:16686"
+    networks:
+      auth_network:
+
+networks:
+  auth_network:

@@ -1,0 +1,69 @@
+version: '3.9'
+
+services:
+  tests:
+    image: auth_api
+    container_name: test_auth_flaskapi
+    volumes:
+      - ./:/tests
+    working_dir: /tests
+    command:
+      - /bin/bash
+      - -c
+      - |
+        pip install -r test-requirements.txt
+        python3 utils/wait_for_redis.py
+        python3 utils/wait_for_postgres.py
+        pytest -vv src
+    env_file:
+      - test.env
+    networks:
+      test-network:
+    depends_on:
+      - db
+      - redis
+      - api
+
+  api:
+    image: auth_api
+    container_name: test_flaskapi
+    env_file:
+      - test.env
+    command: gunicorn wsgi_app:app --bind 0.0.0.0:5050
+    networks:
+      test-network:
+    ports:
+      - '5050:5050'
+
+  db:
+    image: postgres:13.3
+    container_name: test_auth_postgres
+    restart: always
+    ports:
+      - "5433:5432"
+    env_file:
+      - test.env
+    networks:
+      test-network:
+
+  redis:
+    image: redis:6-alpine
+    container_name: test_auth_redis
+    env_file:
+      - test.env
+    ports:
+      - '6379:6379'
+    networks:
+      test-network:
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  test-network:
+
+
