@@ -2,9 +2,10 @@ import enum
 import uuid
 from datetime import datetime
 
+from sqlalchemy import UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 
-from db.initial import db
+from auth.db.initial import db
 
 
 class SexType(enum.Enum):
@@ -22,7 +23,7 @@ class User(db.Model):
 
     phone = db.Column(db.String(255), nullable=False, default='')
     birthday = db.Column(db.Date, nullable=True)
-    sex = db.Column(db.Enum(SexType), nullable=True)
+    sex = db.Column(db.Enum(SexType, create_type=False), nullable=True)
     first_name = db.Column(db.String(255), nullable=False, default='')
     last_name = db.Column(db.String(255), nullable=False, default='')
 
@@ -44,11 +45,16 @@ class User(db.Model):
 
 class LoginHistory(db.Model):
     __tablename__ = 'login_history'
+    __table_args__ = (
+        UniqueConstraint('id', 'created_at'),
+        {
+            'postgresql_partition_by': 'RANGE (created_at)',
+        }
+    )
 
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
-    user_id = db.Column('user_id', UUID(as_uuid=True), db.ForeignKey('users.id'))
-
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    id = db.Column(UUID(as_uuid=True), default=uuid.uuid4, nullable=False, primary_key=True)
+    user_id = db.Column('user_id', UUID(as_uuid=True))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False, primary_key=True)
     user_agent = db.Column(db.String(255), nullable=False, default='')
     platform = db.Column(db.String(255), nullable=False, default='')
     browser = db.Column(db.String(255), nullable=False, default='')

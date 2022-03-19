@@ -5,10 +5,10 @@ from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms.validators import InputRequired
 
-from authorization.password.main import verify_password
-from db.initial import db
-from db.models import LoginHistory, User
-from utils.client import get_ip
+from auth.authorization.password.main import verify_password
+from auth.db.initial import db
+from auth.db.models import LoginHistory, User
+from auth.utils.client import get_ip
 
 
 class LoginForm(FlaskForm):

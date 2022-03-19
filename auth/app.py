@@ -5,11 +5,11 @@ from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 
 
-from api.v1.auth_views import router as auth_router
-from api.v1.oauth_views import router as oauth_router
-from api.v1.roles_views import api
-from app_settings.settings import settings
-from db.initial import db, init_db
+from auth.api.v1.auth_views import router as auth_router
+from auth.api.v1.oauth_views import router as oauth_router
+from auth.api.v1.roles_views import api
+from auth.app_settings.settings import settings
+from auth.db.initial import db, init_db
 
 from jaeger_client import Config
 from flask_opentracing import FlaskTracer
@@ -29,14 +29,6 @@ def main():
 
     migrate = Migrate()
     migrate.init_app(app, db)
-
-    oauth = OAuth(app)
-    oauth.register(
-        "yandex",
-        client_id='d4de3e0905dc4a27a9728d41021197bb',
-        client_secret='7b826e0d1074496ea26f885ad09197dc',
-        client_kwargs={"scope": "email"},
-    )
 
     def _setup_jaeger():
         config = Config(

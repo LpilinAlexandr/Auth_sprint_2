@@ -3,13 +3,13 @@ from http import HTTPStatus
 
 from werkzeug.datastructures import MultiDict
 
-from authorization.forms.login import LoginForm
-from authorization.forms.oauth import OauthUrlForm, OauthServiceForm
-from authorization.forms.registration import RegistrationForm
-from authorization.jwt.installers import set_jwt_couple
+from auth.authorization.forms.login import LoginForm
+from auth.authorization.forms.oauth import OauthUrlForm, OauthServiceForm
+from auth.authorization.forms.registration import RegistrationForm
+from auth.authorization.jwt.installers import set_jwt_couple
 
-from db.initial import db
-from db.models import User
+from auth.db.initial import db
+from auth.db.models import User
 
 router = Blueprint('v1/oauth', __name__, url_prefix='/api/v1/oauth')
 

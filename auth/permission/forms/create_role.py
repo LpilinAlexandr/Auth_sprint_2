@@ -4,9 +4,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms.validators import InputRequired
 
-from db.initial import db
-from db.models import Role
-from utils.validators import RoleNameValidator
+from auth.db.initial import db
+from auth.db.models import Role
+from auth.utils.validators import RoleNameValidator
 
 
 class RoleCreateForm(FlaskForm):

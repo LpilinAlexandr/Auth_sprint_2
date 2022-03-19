@@ -5,7 +5,7 @@ from flask_wtf import FlaskForm
 from werkzeug.exceptions import NotFound
 from wtforms import DateField, IntegerField
 
-from db.models import LoginHistory, User
+from auth.db.models import LoginHistory, User
 
 
 class LoginHistoryForm(FlaskForm):

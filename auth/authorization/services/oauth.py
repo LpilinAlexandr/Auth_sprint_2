@@ -4,7 +4,7 @@ from typing import Optional
 
 import requests
 
-from app_settings.settings import settings
+from auth.app_settings.settings import settings
 from requests.models import PreparedRequest
 
 
@@ -80,11 +80,11 @@ class YandexOauth(BaseOauthService):
     response_type = 'code'
 
     def get_login_url(self):
-        self.redirect_uri = 'http://local.auth:5000/api/v1/oauth/callback/login/yandex'
+        self.redirect_uri = settings.SITE_URL + '/api/v1/oauth/callback/login/yandex'
         return str(self)
 
     def get_register_url(self):
-        self.redirect_uri = 'http://local.auth:5000/api/v1/oauth/callback/register/yandex'
+        self.redirect_uri = settings.SITE_URL + '/api/v1/oauth/callback/register/yandex'
         return str(self)
 
     def get_register_data(self, code: str) -> Optional[dict]:
@@ -144,7 +144,7 @@ class VkOauth(BaseOauthService):
     API_VERSION = '5.131'
 
     def set_redirect_url(self, url_type: str):
-        self.redirect_uri = f'http://local.auth:5000/api/v1/oauth/callback/{url_type}/vk'
+        self.redirect_uri = settings.SITE_URL + f'/api/v1/oauth/callback/{url_type}/vk'
 
     def get_login_url(self):
         self.set_redirect_url('login')

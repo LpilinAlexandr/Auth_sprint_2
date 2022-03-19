@@ -4,7 +4,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms.validators import InputRequired, ValidationError
 
-from authorization.services import oauth
+from auth.authorization.services import oauth
 
 
 SERVICES = {

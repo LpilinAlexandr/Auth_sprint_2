@@ -1,4 +1,4 @@
-from db.models import Role, RoleRelation
+from auth.db.models import Role, RoleRelation
 
 
 def get_active_user_roles(user_id):

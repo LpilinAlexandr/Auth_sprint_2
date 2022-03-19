@@ -1,7 +1,7 @@
 from flask_jwt_extended import decode_token
 
-from app_settings.settings import settings
-from db.no_sql import redis_client
+from auth.app_settings.settings import settings
+from auth.db.no_sql import redis_client
 
 
 def save_refresh(user, refresh_token):

@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from app_settings.settings import settings
+from auth.app_settings.settings import settings
 
 db = SQLAlchemy()
 

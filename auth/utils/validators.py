@@ -1,7 +1,7 @@
 from sqlalchemy.exc import SQLAlchemyError
 from wtforms.validators import Email, Length, ValidationError
 
-from db.models import Role, User
+from auth.db.models import Role, User
 
 
 class RegistrationEmail(Email):
