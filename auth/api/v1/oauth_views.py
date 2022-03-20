@@ -4,13 +4,13 @@ from http import HTTPStatus
 from flask_jwt_extended import jwt_required, get_jwt
 from werkzeug.datastructures import MultiDict
 
-from auth.authorization.forms.login import LoginForm
-from auth.authorization.forms.oauth import OauthUrlForm, OauthServiceForm
-from auth.authorization.forms.registration import RegistrationForm
-from auth.authorization.jwt.installers import set_jwt_couple
+from authorization.forms.login import LoginForm
+from authorization.forms.oauth import OauthUrlForm, OauthServiceForm
+from authorization.forms.registration import RegistrationForm
+from authorization.jwt.installers import set_jwt_couple
 
-from auth.db.initial import db
-from auth.db.models import User, SocialRelation, SocialNetwork
+from db.initial import db
+from db.models import User, SocialRelation, SocialNetwork
 from db.queries import get_social_networks
 
 router = Blueprint('v1/oauth', __name__, url_prefix='/api/v1/oauth')

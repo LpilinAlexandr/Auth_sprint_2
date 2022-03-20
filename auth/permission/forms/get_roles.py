@@ -4,8 +4,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms.validators import UUID
 
-from auth.db.queries import get_active_user_roles
-from auth.permission.forms.set_role import UserIdExistsValidator
+from db.queries import get_active_user_roles
+from permission.forms.set_role import UserIdExistsValidator
 
 
 class GetUserRolesForm(FlaskForm):

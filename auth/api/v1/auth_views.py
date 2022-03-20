@@ -7,12 +7,12 @@ from http import HTTPStatus
 from flask_jwt_extended import get_jwt, jwt_required, unset_jwt_cookies
 from werkzeug.datastructures import MultiDict
 
-from auth.authorization.forms.login import LoginForm
-from auth.authorization.forms.login_history import LoginHistoryForm
-from auth.authorization.forms.registration import RegistrationForm
-from auth.authorization.forms.user_data import ChangeUserDataForm
-from auth.authorization.jwt.installers import get_user_from_jwt, set_jwt_couple
-from auth.authorization.jwt.storage import (delete_all_tokens, delete_token, check_exists_refresh)
+from authorization.forms.login import LoginForm
+from authorization.forms.login_history import LoginHistoryForm
+from authorization.forms.registration import RegistrationForm
+from authorization.forms.user_data import ChangeUserDataForm
+from authorization.jwt.installers import get_user_from_jwt, set_jwt_couple
+from authorization.jwt.storage import (delete_all_tokens, delete_token, check_exists_refresh)
 
 router = Blueprint('v1/auth', __name__, url_prefix='/api/v1/auth')
 

@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     DEVICE_KEY: str = 'devices::user_id::'
     REFRESH_TOKEN_EXP: str = 60 * 60 * 24 * 15
 
-    SITE_URL = 'http://auth.cinema.local:5000'
+    SITE_URL = 'http://auth.cinema.local'
 
     OAUTH_YANDEX_CLIENT_ID: str = os.getenv('OAUTH_YANDEX_CLIENT_ID')
     OAUTH_YANDEX_CLIENT_SECRET: str = os.getenv('OAUTH_YANDEX_CLIENT_SECRET')

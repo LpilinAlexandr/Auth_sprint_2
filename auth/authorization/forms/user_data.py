@@ -3,10 +3,10 @@ from typing import Optional
 from flask_wtf import FlaskForm
 from wtforms import EmailField, StringField
 
-from auth.authorization.forms.registration import RegistrationEmail, StringLength
-from auth.authorization.password.main import encrypt_password, verify_password
-from auth.db.initial import db
-from auth.db.models import User
+from authorization.forms.registration import RegistrationEmail, StringLength
+from authorization.password.main import encrypt_password, verify_password
+from db.initial import db
+from db.models import User
 
 
 class ChangeUserDataForm(FlaskForm):

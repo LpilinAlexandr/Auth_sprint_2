@@ -1,18 +1,15 @@
-from authlib.integrations.flask_client import OAuth
 from flasgger import Swagger
 from flask import Flask, request
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
-
-
-from auth.api.v1.auth_views import router as auth_router
-from auth.api.v1.oauth_views import router as oauth_router
-from auth.api.v1.roles_views import api
-from auth.app_settings.settings import settings
-from auth.db.initial import db, init_db
-
-from jaeger_client import Config
 from flask_opentracing import FlaskTracer
+from jaeger_client import Config
+
+from api.v1.auth_views import router as auth_router
+from api.v1.oauth_views import router as oauth_router
+from api.v1.roles_views import api
+from app_settings.settings import settings
+from db.initial import db, init_db
 
 
 def main():
@@ -48,13 +45,15 @@ def main():
         return config.initialize_tracer()
 
     tracer = FlaskTracer(_setup_jaeger, True, app=app)
+    app.tracer = tracer
 
-    # @tracer.trace()
-    # @app.before_request
-    # def before_request():
-    #     request_id = request.headers.get('X-Request-Id')
-    #     if not request_id:
-    #         raise RuntimeError('request id is requred')
+    # Трассируем всё.
+    @tracer.trace()
+    @app.before_request
+    def before_request():
+        request_id = request.headers.get('X-Request-Id')
+        if not request_id:
+            raise RuntimeError('request id is requred')
 
     return app
 

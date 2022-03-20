@@ -5,10 +5,10 @@ from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms.validators import UUID
 
-from auth.db.initial import db
-from auth.db.models import Role, RoleRelation, User
-from auth.permission.forms.delete_role import RoleIdExistsValidator
-from auth.utils.validators import UserIdExistsValidator
+from db.initial import db
+from db.models import Role, RoleRelation, User
+from permission.forms.delete_role import RoleIdExistsValidator
+from utils.validators import UserIdExistsValidator
 
 
 class RoleSetForm(FlaskForm):

@@ -1,9 +1,9 @@
 from flask_jwt_extended import (create_access_token, create_refresh_token,
                                 set_access_cookies, set_refresh_cookies)
 
-from auth.authorization.jwt.storage import save_refresh
-from auth.db.models import User
-from auth.db.queries import get_active_user_roles
+from authorization.jwt.storage import save_refresh
+from db.models import User
+from db.queries import get_active_user_roles
 
 
 def get_payload(user, user_agent):

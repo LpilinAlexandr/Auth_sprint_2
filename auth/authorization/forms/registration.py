@@ -7,12 +7,12 @@ from werkzeug.datastructures import MultiDict
 from wtforms import EmailField, StringField
 from wtforms.validators import InputRequired
 
-from auth.authorization.password.main import encrypt_password
-from auth.db.initial import db
-from auth.db.models import User, Role, RoleRelation
-from auth.permission.forms.create_role import RoleCreateForm
+from authorization.password.main import encrypt_password
+from db.initial import db
+from db.models import User, Role, RoleRelation
+from permission.forms.create_role import RoleCreateForm
 
-from auth.utils.validators import RegistrationEmail, StringLength
+from utils.validators import RegistrationEmail, StringLength
 
 
 class RegistrationForm(FlaskForm):

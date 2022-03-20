@@ -3,13 +3,13 @@ from werkzeug.datastructures import MultiDict
 from flask_restful import Api, Resource
 from http import HTTPStatus
 
-from auth.authorization.jwt.extra import jwt_required_with_roles
-from auth.db.models import Role
-from auth.permission.forms.change_role import RoleChangeForm
-from auth.permission.forms.create_role import RoleCreateForm
-from auth.permission.forms.delete_role import RoleDeleteForm
-from auth.permission.forms.get_roles import GetUserRolesForm
-from auth.permission.forms.set_role import RoleResetForm, RoleSetForm
+from authorization.jwt.extra import jwt_required_with_roles
+from db.models import Role
+from permission.forms.change_role import RoleChangeForm
+from permission.forms.create_role import RoleCreateForm
+from permission.forms.delete_role import RoleDeleteForm
+from permission.forms.get_roles import GetUserRolesForm
+from permission.forms.set_role import RoleResetForm, RoleSetForm
 
 ADMIN = 'admin'
 api = Api()

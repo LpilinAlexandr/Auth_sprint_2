@@ -1,11 +1,17 @@
 import abc
+import logging
 from http import HTTPStatus
 from typing import Optional
 
 import requests
 
-from auth.app_settings.settings import settings
+from app_settings.settings import settings
 from requests.models import PreparedRequest
+
+from utils.tracer import trace
+
+
+logger = logging.getLogger(__name__)
 
 
 class BaseOauthService(abc.ABC):
@@ -88,6 +94,7 @@ class YandexOauth(BaseOauthService):
         self.redirect_uri = settings.SITE_URL + '/api/v1/oauth/callback/register/yandex'
         return str(self)
 
+    @trace('yandex-register-get-data')
     def get_register_data(self, code: str) -> Optional[dict]:
 
         boundary = '--------------------------578033841511865424602007'
@@ -104,7 +111,7 @@ class YandexOauth(BaseOauthService):
             }
         )
         if response.status_code != HTTPStatus.OK:
-            # todo логирование или какую-тто обработку добавить
+            logger.critical(f'не удалось получить access_token: {response.text}')
             return
 
         data = response.json()
@@ -128,8 +135,10 @@ class YandexOauth(BaseOauthService):
                 'first_name': user_info['first_name'],
                 'last_name': user_info['last_name'],
             }
-        # todo логирование или какую-тто обработку добавить
 
+        logger.critical(f'не удалось получить данные пользователя: {response_info.text}')
+
+    @trace('yandex-login-get-data')
     def get_login_data(self, code: str) -> dict:
         return self.get_register_data(code)
 
@@ -168,7 +177,7 @@ class VkOauth(BaseOauthService):
         )
 
         if response.status_code != HTTPStatus.OK:
-            # todo логирование или какую-тто обработку добавить
+            logger.critical(f'не удалось получить access_token: {response.text}')
             return
 
         data = response.json()
@@ -190,12 +199,15 @@ class VkOauth(BaseOauthService):
                 'first_name': user_info['response'][0]['first_name'],
                 'last_name': user_info['response'][0]['last_name'],
             }
-        # todo логирование или какую-тто обработку добавить
 
+        logger.critical(f'не удалось получить данные пользователя: {response_info.text}')
+
+    @trace('vk-register-get-data')
     def get_register_data(self, code: str) -> Optional[dict]:
         self.set_redirect_url('register')
         return self.get_data(code)
 
+    @trace('vk-login-get-data')
     def get_login_data(self, code: str) -> Optional[dict]:
         self.set_redirect_url('login')
         return self.get_data(code)

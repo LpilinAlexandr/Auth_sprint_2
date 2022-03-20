@@ -5,7 +5,7 @@ from datetime import datetime
 from sqlalchemy import UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 
-from auth.db.initial import db
+from db.initial import db
 
 
 class SexType(enum.Enum):
