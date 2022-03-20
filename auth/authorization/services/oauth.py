@@ -71,6 +71,7 @@ class BaseOauthService(abc.ABC):
 
 class YandexOauth(BaseOauthService):
 
+    name = 'yandex'
     client_id = settings.OAUTH_YANDEX_CLIENT_ID
     client_secret = settings.OAUTH_YANDEX_CLIENT_SECRET
 
@@ -135,6 +136,7 @@ class YandexOauth(BaseOauthService):
 
 class VkOauth(BaseOauthService):
 
+    name = 'vk'
     client_id = settings.OAUTH_VK_CLIENT_ID
     client_secret = settings.OAUTH_VK_CLIENT_SECRET
     site_url = 'https://oauth.vk.com/oauth/authorize'

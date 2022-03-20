@@ -31,7 +31,6 @@ class User(db.Model):
     is_active = db.Column(db.Boolean, default=True)
 
     roles = db.relationship('Role', secondary='roles_relations', backref=db.backref('users', lazy='dynamic'))
-    logins = db.relationship('LoginHistory', lazy='dynamic', cascade='all, delete-orphan', backref=db.backref('user'))
 
     def __repr__(self):
         return f'<User {self.email}>'
@@ -81,3 +80,22 @@ class RoleRelation(db.Model):
 
     # NOTE: Активной считается роль, у которой finish_at = NULL
     finish_at = db.Column(db.DateTime, nullable=True)
+
+
+class SocialNetwork(db.Model):
+    __tablename__ = 'social_networks'
+
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
+    name = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.String(255), nullable=False)
+
+
+class SocialRelation(db.Model):
+    __tablename__ = "social_relations"
+    __table_args__ = (
+        UniqueConstraint('user_id', 'social_id'),
+    )
+
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
+    user_id = db.Column('user_id', UUID(as_uuid=True), db.ForeignKey('users.id'))
+    social_id = db.Column('social_id', UUID(as_uuid=True), db.ForeignKey('social_networks.id'))

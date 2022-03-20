@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from http import HTTPStatus
 
+from flask_jwt_extended import jwt_required, get_jwt
 from werkzeug.datastructures import MultiDict
 
 from auth.authorization.forms.login import LoginForm
@@ -9,7 +10,8 @@ from auth.authorization.forms.registration import RegistrationForm
 from auth.authorization.jwt.installers import set_jwt_couple
 
 from auth.db.initial import db
-from auth.db.models import User
+from auth.db.models import User, SocialRelation, SocialNetwork
+from db.queries import get_social_networks
 
 router = Blueprint('v1/oauth', __name__, url_prefix='/api/v1/oauth')
 
@@ -35,7 +37,7 @@ def get_oauth_register_url(service):
           properties:
             url:
               type: string
-              example: http://todo
+              example: http://oauth.yandex.ru/authorize?...
     """
     form = OauthUrlForm(MultiDict({
         'service': service,
@@ -71,7 +73,7 @@ def get_oauth_login_url(service):
           properties:
             url:
               type: string
-              example: http://todo
+              example: http://oauth.yandex.ru/authorize?...
     """
     form = OauthUrlForm(MultiDict({
         'service': service,
@@ -106,9 +108,10 @@ def oauth_callback_register(service):
         schema:
           type: object
           properties:
-            url:
-              type: string
-              example: todo
+          type: application/json
+          example: {
+            "email": "some@amail.com", "password": "random-password"
+          }
     """
     code = request.args.get('code')
     form = OauthServiceForm(MultiDict({
@@ -135,6 +138,13 @@ def oauth_callback_register(service):
 
     new_user.first_name = register_data['first_name']
     new_user.last_name = register_data['last_name']
+
+    social_network = SocialNetwork.query.filter_by(name=service.name).first()
+    new_social_relation = SocialRelation(
+        social_id=str(social_network.id),
+        user_id=str(new_user.id),
+    )
+    db.session.add(new_social_relation)
     db.session.commit()
 
     return jsonify({
@@ -163,9 +173,9 @@ def oauth_callback_login(service):
         schema:
           type: object
           properties:
-            url:
+            msg:
               type: string
-              example: http://adsadsaq
+              example: login successful
     """
     code = request.args.get('code')
     form = OauthServiceForm(MultiDict({
@@ -189,3 +199,68 @@ def oauth_callback_login(service):
     set_jwt_couple(user, login_snapshot.user_agent, response)
 
     return response
+
+
+@router.route('/social-networks', methods=['GET'])
+@jwt_required()
+def get_networks():
+    """Получение всех привязанных соцсетей юзера
+    ---
+    tags:
+      - OAUTH
+    responses:
+      200:
+        description: урл для авторизации
+        schema:
+          type: object
+          properties:
+          type: application/json
+          example: {
+            "networks": [{"name": "yandex", "description": "example", "id": "some-uuid"},]
+          }
+    """
+    jwt = get_jwt()
+    user_id = jwt['sub']
+    networks = get_social_networks(user_id)
+
+    response_data = [
+        {
+            'name': network.name,
+            'description': network.description,
+            'id': str(network.id)
+        } for network in networks
+    ]
+
+    return jsonify({
+        'networks': response_data
+    })
+
+
+@router.route('social-networks/<network_id>', methods=['DELETE'])
+@jwt_required()
+def delete_network_relation(network_id):
+    """Удаления привязанной соцсети пользователя
+    ---
+    tags:
+      - OAUTH
+    parameters:
+      - name: network_id
+        in: path
+        type: string
+        required: true
+    responses:
+      200:
+        description: успешный ответ
+        schema:
+          type: object
+          properties:
+            msg:
+              type: string
+              example: deleted successful
+    """
+    jwt = get_jwt()
+    user_id = jwt['sub']
+    SocialRelation.query.filter_by(user_id=user_id, social_id=network_id).delete()
+    db.session.commit()
+
+    return jsonify({"msg": "deleted successful"})
