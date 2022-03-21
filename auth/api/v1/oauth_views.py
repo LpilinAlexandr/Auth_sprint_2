@@ -10,7 +10,7 @@ from authorization.forms.registration import RegistrationForm
 from authorization.jwt.installers import set_jwt_couple
 
 from db.initial import db
-from db.models import User, SocialRelation, SocialNetwork
+from db.models import User, SocialRelation
 from db.queries import get_social_networks
 from utils.limit import limit
 
@@ -136,17 +136,12 @@ def oauth_callback_register(service):
         return jsonify({'error': register_form.errors}), HTTPStatus.BAD_REQUEST
 
     new_user = register_form.create_new_user()
-
-    new_user.first_name = register_data['first_name']
-    new_user.last_name = register_data['last_name']
-
-    social_network = SocialNetwork.query.filter_by(name=service.name).first()
-    new_social_relation = SocialRelation(
-        social_id=str(social_network.id),
-        user_id=str(new_user.id),
+    register_form.oauth_user_update(
+        user=new_user,
+        network_name=service.name,
+        first_name=register_data['first_name'],
+        last_name=register_data['last_name']
     )
-    db.session.add(new_social_relation)
-    db.session.commit()
 
     return jsonify({
         'email': register_data['email'],

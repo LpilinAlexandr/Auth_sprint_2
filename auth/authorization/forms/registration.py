@@ -9,7 +9,7 @@ from wtforms.validators import InputRequired
 
 from authorization.password.main import encrypt_password
 from db.initial import db
-from db.models import User, Role, RoleRelation
+from db.models import User, Role, RoleRelation, SocialNetwork, SocialRelation
 from permission.forms.create_role import RoleCreateForm
 
 from utils.validators import RegistrationEmail, StringLength
@@ -68,3 +68,22 @@ class RegistrationForm(FlaskForm):
     @staticmethod
     def generate_random_password(symbol_amount: int = 20):
         return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(symbol_amount))
+
+    def oauth_user_update(self, network_name: str, user: User, first_name: str, last_name: str):
+        """
+        Обновляет данные пользователя и привязывает к нему аккаунт социальной сети.
+        :param network_name: название социальной сети
+        :param user: пользователь
+        :param first_name: имя
+        :param last_name: фамилия
+        """
+        user.first_name = first_name
+        user.last_name = last_name
+
+        social_network = SocialNetwork.query.filter_by(name=network_name).first()
+        new_social_relation = SocialRelation(
+            social_id=str(social_network.id),
+            user_id=str(user.id),
+        )
+        db.session.add(new_social_relation)
+        db.session.commit()

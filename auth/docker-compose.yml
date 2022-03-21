@@ -7,18 +7,11 @@ services:
     container_name: auth_api
     env_file:
       - .env
-    command:
-      - /bin/bash
-      - -c
-      - |
-        python3 utils/wait_for_redis.py
-        python3 utils/wait_for_postgres.py
-        gunicorn wsgi_app:app --bind 0.0.0.0:5000
+    entrypoint: ['bash', 'entrypoint.sh']
     expose:
       - '5000'
     networks:
       auth_network:
-
 
   nginx:
     build: ./nginx
@@ -32,8 +25,8 @@ services:
     image: postgres:13.3
     container_name: auth_postgres
     restart: always
-    ports:
-      - "5432:5432"
+#    ports:
+#      - "5432:5432"
     env_file:
       - .env
     networks:
@@ -46,8 +39,8 @@ services:
       - ALLOW_EMPTY_PASSWORD=yes
     networks:
       auth_network:
-    ports:
-      - '6379:6379'
+#    ports:
+#      - '6379:6379'
 
   jaeger:
     image: jaegertracing/all-in-one:latest

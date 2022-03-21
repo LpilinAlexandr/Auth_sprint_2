@@ -12,4 +12,7 @@ RUN pip install -r requirements.txt
 
 COPY . ./
 
+ENV PYTHONPATH "${PYTHONPATH}:/auth"
+ENV FLASK_APP=app:main
+
 EXPOSE 5000

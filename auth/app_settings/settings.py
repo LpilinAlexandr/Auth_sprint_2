@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str = 'super-secret'
     JWT_TOKEN_LOCATION: list = ['cookies']
     JWT_COOKIE_SECURE: bool = False
-    JWT_COOKIE_DOMAIN: str = os.getenv('SITE_DOMAINs', default='cinema.local')
+    JWT_COOKIE_DOMAIN: str = os.getenv('SITE_DOMAIN', default='cinema.local')
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
@@ -29,13 +29,15 @@ class Settings(BaseSettings):
 
     SITE_URL = 'http://auth.cinema.local'
 
+    # В целях безопасности данные client_id и client_secret приложений вынесены в переменные окружения
+    # и не выкладываются в репозиторий. Если они будут нужны для тестирования - можно предоставить.
     OAUTH_YANDEX_CLIENT_ID: str = os.getenv('OAUTH_YANDEX_CLIENT_ID')
     OAUTH_YANDEX_CLIENT_SECRET: str = os.getenv('OAUTH_YANDEX_CLIENT_SECRET')
 
     OAUTH_VK_CLIENT_ID: str = os.getenv('OAUTH_VK_CLIENT_ID')
     OAUTH_VK_CLIENT_SECRET: str = os.getenv('OAUTH_VK_CLIENT_SECRET')
 
-    # Установим лимит на 20 запросов в минуту
+    # Лимит на 20 запросов в минуту
     REQUEST_LIMIT_PER_MINUTE = 20
 
     class Config:
