@@ -12,6 +12,7 @@ from authorization.jwt.installers import set_jwt_couple
 from db.initial import db
 from db.models import User, SocialRelation, SocialNetwork
 from db.queries import get_social_networks
+from utils.limit import limit
 
 router = Blueprint('v1/oauth', __name__, url_prefix='/api/v1/oauth')
 
@@ -203,6 +204,7 @@ def oauth_callback_login(service):
 
 @router.route('/social-networks', methods=['GET'])
 @jwt_required()
+@limit
 def get_networks():
     """Получение всех привязанных соцсетей юзера
     ---

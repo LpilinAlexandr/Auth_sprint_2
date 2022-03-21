@@ -10,6 +10,7 @@ from permission.forms.create_role import RoleCreateForm
 from permission.forms.delete_role import RoleDeleteForm
 from permission.forms.get_roles import GetUserRolesForm
 from permission.forms.set_role import RoleResetForm, RoleSetForm
+from utils.limit import limit
 
 ADMIN = 'admin'
 api = Api()
@@ -18,6 +19,7 @@ api = Api()
 class RoleWithoutIdView(Resource):
 
     @jwt_required_with_roles(roles={ADMIN})
+    @limit
     def get(self):
         """Просмотр всех ролей
         ---
@@ -423,6 +425,7 @@ class RoleUserView(Resource):
 class RoleUserCheckView(Resource):
 
     @jwt_required_with_roles()
+    @limit
     def get(self, user_id):
         """Проверка наличя прав у пользователя
         ---

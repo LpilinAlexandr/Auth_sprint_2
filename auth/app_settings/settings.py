@@ -35,6 +35,9 @@ class Settings(BaseSettings):
     OAUTH_VK_CLIENT_ID: str = os.getenv('OAUTH_VK_CLIENT_ID')
     OAUTH_VK_CLIENT_SECRET: str = os.getenv('OAUTH_VK_CLIENT_SECRET')
 
+    # Установим лимит на 20 запросов в минуту
+    REQUEST_LIMIT_PER_MINUTE = 20
+
     class Config:
         env_file = '.env'
 
